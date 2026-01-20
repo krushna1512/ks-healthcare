@@ -1,0 +1,10 @@
+[
+    {
+        "service": "X-Ray",
+        "cost": 150.00
+    },
+    {
+        "service": "MRI",
+        "cost": 1200.50
+    }
+]

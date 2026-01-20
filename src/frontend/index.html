@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-group {
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output-area {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 50px;
+            white-space: pre-wrap;
+        }
+
+        h2 {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Healthcare Portal</h1>
+        <p>Welcome to the secure portal.</p>
+
+        <div class="button-group">
+            <button onclick="fetchService('insurance', 'text')">Insurance Service</button>
+            <button onclick="fetchService('patients', 'json')">Patients Service</button>
+            <button onclick="fetchService('pricing', 'json')">Pricing Service</button>
+        </div>
+
+        <div id="output-container" style="display:none;">
+            <h2 id="output-title">Service Response</h2>
+            <div id="output-content" class="output-area"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = "";
+
+        async function fetchService(serviceName, responseType) {
+            const outputContainer = document.getElementById('output-container');
+            const outputTitle = document.getElementById('output-title');
+            const outputContent = document.getElementById('output-content');
+
+            outputContainer.style.display = 'block';
+            outputTitle.textContent = 'Loading...';
+            outputContent.textContent = 'Fetching data...';
+
+            let url;
+            if (serviceName === 'insurance') {
+                url = 'http://localhost:3001/insurance';
+            } else if (serviceName === 'patients') {
+                url = 'http://localhost:3002/patients';
+            } else if (serviceName === 'pricing') {
+                url = 'http://localhost:3003/pricing';
+            } else {
+                url = `${API_BASE_URL}/${serviceName}`;
+            }
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                let data;
+                if (responseType === 'text') {
+                    data = await response.text();
+                    outputContent.textContent = data;
+                } else {
+                    data = await response.json();
+                    outputContent.textContent = JSON.stringify(data, null, 2);
+                }
+
+                outputTitle.textContent = `${serviceName.charAt(0).toUpperCase() + serviceName.slice(1)} Service Response`;
+
+            } catch (error) {
+                console.error('Error:', error);
+                outputTitle.textContent = 'Error';
+                outputContent.textContent = `Failed to fetch data: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+
+</html>
