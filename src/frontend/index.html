@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Healthcare Portal</title>
+    <meta name="api-base-url" content="">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -82,7 +83,26 @@
     </div>
 
     <script>
-        const API_BASE_URL = "";
+        const meta = document.querySelector('meta[name="api-base-url"]');
+        const API_BASE_URL = (meta && meta.content) || "";
+
+        function buildUrl(serviceName) {
+            if (API_BASE_URL) {
+                const base = API_BASE_URL.replace(/\/$/, '');
+                if (serviceName === 'insurance') return `${base}/insurance`;
+                return `${base}/${serviceName}`;
+            }
+
+            if (serviceName === 'insurance') {
+                return 'http://localhost:3001/insurance';
+            } else if (serviceName === 'patients') {
+                return 'http://localhost:3002/patients';
+            } else if (serviceName === 'pricing') {
+                return 'http://localhost:3003/pricing';
+            }
+
+            return `${API_BASE_URL}/${serviceName}`;
+        }
 
         async function fetchService(serviceName, responseType) {
             const outputContainer = document.getElementById('output-container');
@@ -93,16 +113,7 @@
             outputTitle.textContent = 'Loading...';
             outputContent.textContent = 'Fetching data...';
 
-            let url;
-            if (serviceName === 'insurance') {
-                url = 'http://localhost:3001/insurance';
-            } else if (serviceName === 'patients') {
-                url = 'http://localhost:3002/patients';
-            } else if (serviceName === 'pricing') {
-                url = 'http://localhost:3003/pricing';
-            } else {
-                url = `${API_BASE_URL}/${serviceName}`;
-            }
+            const url = buildUrl(serviceName);
 
             try {
                 const response = await fetch(url);
