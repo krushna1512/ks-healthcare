@@ -93,15 +93,17 @@
                 return `${base}/${serviceName}`;
             }
 
-            if (serviceName === 'insurance') {
-                return 'http://localhost:3001/insurance';
-            } else if (serviceName === 'patients') {
-                return 'http://localhost:3002/patients';
-            } else if (serviceName === 'pricing') {
-                return 'http://localhost:3003/pricing';
+            // If running locally, call services on localhost with their mapped ports
+            const host = window.location.hostname;
+            if (host === 'localhost' || host === '127.0.0.1') {
+                if (serviceName === 'insurance') return 'http://localhost:3001/insurance';
+                if (serviceName === 'patients') return 'http://localhost:3002/patients';
+                if (serviceName === 'pricing') return 'http://localhost:3003/pricing';
             }
 
-            return `${API_BASE_URL}/${serviceName}`;
+            // In deployed environments serve relative paths so the ALB can route by path
+            if (serviceName === 'insurance') return '/insurance';
+            return `/${serviceName}`;
         }
 
         async function fetchService(serviceName, responseType) {
