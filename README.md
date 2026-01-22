@@ -50,16 +50,12 @@ This sets up the VPC, Load Balancer, and ECR repositories.
 ```
 cd terraform/infrastructure
 terraform init
+terraform plan
 terraform apply
 ```
 
 **Step 2: Deploy Application Services**
-This deploys the ECS services and connects them to the infrastructure.
-```
-cd terraform/services
-terraform init
-terraform apply
-```
+This deploys the ECS services and connects them to the infrastructure. (It is triggered from deployment workflow)
 
 ### 2. Accessing the Application
 
